@@ -11,7 +11,7 @@ import cv2
 sio = socketio.Server()
 app = Flask(__name__)
 
-speed_limit = 10
+speed_limit = 20
 
 
 def img_preprocess(img):
@@ -32,6 +32,7 @@ def telemetry(sid, data):
     image = np.array([image])
     speed = float(data['speed'])
     throttle = 1.0 - speed/speed_limit
+    
     steering_angle = float(model.predict(image))
     send_control(steering_angle, throttle)
 
@@ -40,7 +41,7 @@ def telemetry(sid, data):
 @sio.on('connect')
 def connect(sid, environ):
     print("Connected", sid)
-    send_control(0, 0.5)
+    send_control(0, 0)
     print("After send_control")
 
 
