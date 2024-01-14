@@ -15,13 +15,8 @@ speed_limit = 10
 
 
 def img_preprocess(img):
-    #Crop the image
     img = img[60:135, :, :]
-    # Convert color to yuv y-brightness, u,v chrominants(color)
-    # Recommend in the NVIDIA paper
     img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
-    # Apply Gaussian Blur
-    # As suggested by NVIDIA paper
     img = cv2.GaussianBlur(img, (3, 3), 0)
     img = cv2.resize(img, (200, 66))
     img = img/255
@@ -30,6 +25,7 @@ def img_preprocess(img):
 
 @sio.on('telemetry')
 def telemetry(sid, data):
+    print("Telemetry received")
     image = Image.open(BytesIO(base64.b64decode(data['image'])))
     image = np.asarray(image)
     image = img_preprocess(image)
@@ -43,8 +39,9 @@ def telemetry(sid, data):
 
 @sio.on('connect')
 def connect(sid, environ):
-    print('Connected')
-    send_control(0, 0)
+    print("Connected", sid)
+    send_control(0, 0.5)
+    print("After send_control")
 
 
 def send_control(steering_angle, throttle):
@@ -55,6 +52,10 @@ def send_control(steering_angle, throttle):
 
 
 if __name__ == '__main__':
-    model = load_model('alpha_model.h5')
-    app = socketio.Middleware(sio, app)
-    eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
+    try:
+        model = load_model('model_three_camera.h5')
+        print("Model loaded successfully")
+        app = socketio.Middleware(sio, app)
+        eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
+    except Exception as e:
+        print(f"Error: {e}")
