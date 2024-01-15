@@ -11,8 +11,9 @@ import cv2
 sio = socketio.Server()
 app = Flask(__name__)
 
-speed_limit = 20
+speed_limit = 30
 #track 1 speed limit 30
+#track 2 speed limit 25
 
 
 
@@ -56,7 +57,7 @@ def send_control(steering_angle, throttle):
 
 if __name__ == '__main__':
     try:
-        model = load_model('model2LR.h5')
+        model = load_model('model_allCamera.h5')
         print("Model loaded successfully")
         app = socketio.Middleware(sio, app)
         eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
