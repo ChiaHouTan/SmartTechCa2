@@ -11,10 +11,12 @@ import cv2
 sio = socketio.Server()
 app = Flask(__name__)
 
-speed_limit = 23
+speed_limit = 35
 #track 1 model1 speed limit 30
 #track 2 model2 speed limit 25
-#All track model3 speed limit 30 for track 1 and for track 2
+#All track model3 speed limit 35 for track 1 and for track 2 25
+#track 1 time:
+#track 2 time:
 
 
 def img_preprocess(img):
